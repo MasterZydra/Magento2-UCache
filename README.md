@@ -27,6 +27,11 @@ class Demo {
         $this->ucache->remove('myModule_cacheKey');
         // Flush the entire UCache
         $this->ucache->clean();
+
+        // Cache value for 30 seconds
+        $this->ucache->remember('myModule_cacheKey', 30, function () { return 42; });
+        // Cache value forever
+        $this->ucache->rememberForever('myModule_cacheKey', function () { return 42; });
     }
 }
 ```

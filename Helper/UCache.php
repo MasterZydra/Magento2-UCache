@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MasterZydra\UCache\Helper;
 
+use MasterZydra\UCache\Model\UCache as UCacheModel;
+
 class UCache extends \Magento\Framework\App\Helper\AbstractHelper
 {
     private \MasterZydra\UCache\Model\ResourceModel\UCache $ucacheRes;
@@ -18,12 +20,10 @@ class UCache extends \Magento\Framework\App\Helper\AbstractHelper
         $this->ucacheRes = $ucacheResFactory->create();
     }
 
+    /** Load the given cache key */
     public function load(string $cacheKey, mixed $default = null): mixed
     {
-        /** @var \MasterZydra\UCache\Model\UCache $ucache */
-        $ucache = $this->ucacheFactory->create();
-        $this->ucacheRes->load($ucache, $cacheKey, 'key');
-
+        $ucache = $this->loadCache($cacheKey);
         if ($ucache->getId() === null) {
             return $default;
         }
@@ -31,24 +31,20 @@ class UCache extends \Magento\Framework\App\Helper\AbstractHelper
         return $ucache->getValue();
     }
 
+    /** Add or update the given cache key with the given value */
     public function save(string $cacheKey, mixed $value): void
     {
-        /** @var \MasterZydra\UCache\Model\UCache $ucache */
-        $ucache = $this->ucacheFactory->create();
-        $this->ucacheRes->load($ucache, $cacheKey, 'key');
-
+        $ucache = $this->loadCache($cacheKey);
         $ucache->setKey($cacheKey);
         $ucache->setValue($value);
 
         $this->ucacheRes->save($ucache);
     }
 
+    /** Remove the given cache key */
     public function remove(string $cacheKey): void
     {
-        /** @var \MasterZydra\UCache\Model\UCache $ucache */
-        $ucache = $this->ucacheFactory->create();
-        $this->ucacheRes->load($ucache, $cacheKey, 'key');
-
+        $ucache = $this->loadCache($cacheKey);
         if ($ucache->getId() === null) {
             return;
         }
@@ -56,6 +52,33 @@ class UCache extends \Magento\Framework\App\Helper\AbstractHelper
         $this->ucacheRes->delete($ucache);
     }
 
+    /** Load given cache key. If it is not cached yet or its expired, call given function and cache result. */
+    public function remember(string $cacheKey, int $seconds, callable $value): mixed
+    {
+        $ucache = $this->loadCache($cacheKey);
+        if ($ucache->getId() === null || $ucache->getModifiedAt()->getTimestamp() + $seconds < time()) {
+            $ucache->setKey($cacheKey);
+            $ucache->setValue($value());
+            $this->ucacheRes->save($ucache);
+        }
+
+        return $ucache->getValue();
+    }
+
+    /** Load given cache key. If it is not cached yet, call given function and cache result. */
+    public function rememberForever(string $cacheKey, callable $value): mixed
+    {
+        $ucache = $this->loadCache($cacheKey);
+        if ($ucache->getId() === null) {
+            $ucache->setKey($cacheKey);
+            $ucache->setValue($value());
+            $this->ucacheRes->save($ucache);
+        }
+
+        return $ucache->getValue();
+    }
+
+    /** Remove all cache entries */
     public function clean(): void
     {
         /** @var \MasterZydra\UCache\Model\ResourceModel\UCache\Collection $coll */
@@ -65,5 +88,13 @@ class UCache extends \Magento\Framework\App\Helper\AbstractHelper
         foreach ($coll as $ucache) {
             $this->ucacheRes->delete($ucache);
         }
+    }
+
+    private function loadCache(string $cacheKey): UCacheModel
+    {
+        /** @var \MasterZydra\UCache\Model\UCache $ucache */
+        $ucache = $this->ucacheFactory->create();
+        $this->ucacheRes->load($ucache, $cacheKey, 'key');
+        return $ucache;
     }
 }

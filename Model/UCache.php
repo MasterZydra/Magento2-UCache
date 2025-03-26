@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace MasterZydra\UCache\Model;
 
-use Serializable;
+use DateTime;
 
 class UCache extends \Magento\Framework\Model\AbstractModel
 {
     private const KEY = 'key';
     private const VALUE = 'value';
+    private const MODIFIED_AT = 'modified_at';
 
     public function _construct(
     ) {
@@ -32,5 +33,10 @@ class UCache extends \Magento\Framework\Model\AbstractModel
     public function setValue($value): self
     {
         return $this->setData(self::VALUE, serialize($value));
+    }
+
+    public function getModifiedAt(): DateTime
+    {
+        return new DateTime($this->getData(self::MODIFIED_AT));
     }
 }
