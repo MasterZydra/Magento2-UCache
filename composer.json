@@ -1,0 +1,27 @@
+{
+    "name": "masterzydra/magento2-ucache",
+    "description": "Module that adds an universal cache to Magento2",
+    "keywords": ["Cache", "General Cache", "Universal Cache", "Magento", "Magento2"],
+    "type": "magento2-module",
+    "require": {
+        "php": "^8.2",
+        "magento/framework": "*"
+    },
+    "version": "1.0.0",
+    "license": "MIT",
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "MasterZydra\\UCache\\": ""
+        }
+    },
+    "authors": [
+        {
+            "name": "David Hein",
+            "email": "github@davidhein.de"
+        }
+    ],
+    "minimum-stability": "stable"
+}
