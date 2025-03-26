@@ -9,8 +9,26 @@ But what if you want to cache a string? Which cache can you use? This package co
 - [Updating to latest version](#updating-to-latest-version)
 
 ## Usage
-```
-TBD
+The values are stored in a table in the database. The getter and setter will serialize/deserialize the given value.
+
+```PHP
+class Demo {
+    public function __construct(
+        private \MasterZydra\UCache\Helper\UCache $ucache,
+    ) { }
+
+    public function doWork()
+    {
+        // Add a value to the cache
+        $this->ucache->save('myModule_cacheKey', ['some' => 'array']);
+        // Load a cache key
+        $value = $this->ucache->load('myModule_cacheKey');
+        // Remove a single cache entry
+        $this->ucache->remove('myModule_cacheKey');
+        // Flush the entire UCache
+        $this->ucache->clean();
+    }
+}
 ```
 
 ## Installation
