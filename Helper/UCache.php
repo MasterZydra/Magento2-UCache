@@ -53,12 +53,16 @@ class UCache extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /** Load given cache key. If it is not cached yet or its expired, call given function and cache result. */
-    public function remember(string $cacheKey, int $seconds, callable $value): mixed
+    public function remember(string $cacheKey, int $seconds, callable $value, ?array $args = null): mixed
     {
         $ucache = $this->loadCache($cacheKey);
         if ($ucache->getId() === null || $ucache->getModifiedAt()->getTimestamp() + $seconds < time()) {
             $ucache->setKey($cacheKey);
-            $ucache->setValue($value());
+            if ($args === null) {
+                $ucache->setValue($value());
+            } else {
+                $ucache->setValue($value(...$args));
+            }
             $this->ucacheRes->save($ucache);
         }
 
@@ -66,12 +70,16 @@ class UCache extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /** Load given cache key. If it is not cached yet, call given function and cache result. */
-    public function rememberForever(string $cacheKey, callable $value): mixed
+    public function rememberForever(string $cacheKey, callable $value, ?array $args = null): mixed
     {
         $ucache = $this->loadCache($cacheKey);
         if ($ucache->getId() === null) {
             $ucache->setKey($cacheKey);
-            $ucache->setValue($value());
+            if ($args === null) {
+                $ucache->setValue($value());
+            } else {
+                $ucache->setValue($value(...$args));
+            }
             $this->ucacheRes->save($ucache);
         }
 

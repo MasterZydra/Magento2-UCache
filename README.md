@@ -32,6 +32,18 @@ class Demo {
         $this->ucache->remember('myModule_cacheKey', 30, function () { return 42; });
         // Cache value forever
         $this->ucache->rememberForever('myModule_cacheKey', function () { return 42; });
+
+        // "remember" and "rememberForever" can also be used with functions with arguments
+        // The values to pass when the function is called are passed as an array.
+        $value = $this->ucache->remember(
+            'customerGroupColl',
+            10,
+            function (CollectionFactory $collFactory, LoggerInterface $logger) {
+                $logger->error('remember customer groups');
+                return $collFactory->create();
+            },
+            [$this->collFactory, $this->logger]
+        );
     }
 }
 ```
