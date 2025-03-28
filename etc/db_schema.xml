@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 <schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
-	<table name="masterzydra_ucache_ucache" resource="default" engine="innodb" comment="masterzydra_ucache_ucache Table">
-		<column xsi:type="int" name="ucache_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Entity Id" />
-		<constraint xsi:type="primary" referenceId="PRIMARY">
-			<column name="ucache_id" />
-		</constraint>
+    <table name="masterzydra_ucache_ucache" resource="default" engine="innodb" comment="masterzydra_ucache_ucache Table">
+        <column xsi:type="int" name="ucache_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Entity Id" />
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="ucache_id" />
+        </constraint>
 
-		<column name="key" nullable="false" xsi:type="text" comment="Cache key" />
-		<constraint xsi:type="unique" referenceId="UNQ_MASTERZYDRA_UCACHE_UCACHE_KEY">
-			<column name="key"/>
-		</constraint>
+        <column name="key" nullable="false" xsi:type="text" comment="Cache key" />
+        <constraint xsi:type="unique" referenceId="UNQ_MASTERZYDRA_UCACHE_UCACHE_KEY">
+            <column name="key"/>
+        </constraint>
 
-		<column name="value" nullable="false" xsi:type="blob" comment="Cached value" />
-		<column xsi:type="timestamp" name="modified_at" nullable="true" comment="Last modified date and time for the entry"/>
-	</table>
+        <column name="value" nullable="false" xsi:type="blob" comment="Cached value" />
+        <column xsi:type="timestamp" name="modified_at" nullable="true" comment="Last modified date and time for the entry"/>
+    </table>
 </schema>

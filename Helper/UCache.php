@@ -32,24 +32,38 @@ class UCache extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /** Add or update the given cache key with the given value */
-    public function save(string $cacheKey, mixed $value): void
+    public function save(string $cacheKey, mixed $value): bool
     {
-        $ucache = $this->loadCache($cacheKey);
-        $ucache->setKey($cacheKey);
-        $ucache->setValue($value);
+        try {
+            $ucache = $this->loadCache($cacheKey);
+            $ucache->setKey($cacheKey);
+            $ucache->setValue($value);
+    
+            $this->ucacheRes->save($ucache);
 
-        $this->ucacheRes->save($ucache);
+            return true;
+        } catch (\Throwable $th) {
+            $this->_logger->error('UCache: Failed to save value', [$th->getMessage(), $th->getTraceAsString()]);
+            return false;
+        }
     }
 
     /** Remove the given cache key */
-    public function remove(string $cacheKey): void
+    public function remove(string $cacheKey): bool
     {
-        $ucache = $this->loadCache($cacheKey);
-        if ($ucache->getId() === null) {
-            return;
-        }
+        try {
+            $ucache = $this->loadCache($cacheKey);
+            if ($ucache->getId() === null) {
+                return true;
+            }
 
-        $this->ucacheRes->delete($ucache);
+            $this->ucacheRes->delete($ucache);
+
+            return true;
+        } catch (\Throwable $th) {
+            $this->_logger->error('UCache: Failed to clean cache', [$th->getMessage(), $th->getTraceAsString()]);
+            return false;
+        }
     }
 
     /** Load given cache key. If it is not cached yet or its expired, call given function and cache result. */
@@ -87,18 +101,25 @@ class UCache extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /** Remove all cache entries */
-    public function clean(): void
+    public function clean(): bool
     {
-        /** @var \MasterZydra\UCache\Model\ResourceModel\UCache\Collection $coll */
-        $coll = $this->ucacheCollFactory->create();
+        try {
+            /** @var \MasterZydra\UCache\Model\ResourceModel\UCache\Collection $coll */
+            $coll = $this->ucacheCollFactory->create();
 
-        /** @var \MasterZydra\UCache\Model\UCache $ucache */
-        foreach ($coll as $ucache) {
-            $this->ucacheRes->delete($ucache);
+            /** @var \MasterZydra\UCache\Model\UCache $ucache */
+            foreach ($coll as $ucache) {
+                $this->ucacheRes->delete($ucache);
+            }
+
+            return true;
+        } catch (\Throwable $th) {
+            $this->_logger->error('UCache: Failed to clean cache', [$th->getMessage(), $th->getTraceAsString()]);
+            return false;
         }
     }
 
-    private function loadCache(string $cacheKey): UCacheModel
+    public function loadCache(string $cacheKey): UCacheModel
     {
         /** @var \MasterZydra\UCache\Model\UCache $ucache */
         $ucache = $this->ucacheFactory->create();

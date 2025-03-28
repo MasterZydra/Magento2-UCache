@@ -48,6 +48,26 @@ class Demo {
 }
 ```
 
+## Clean/Flush cache
+You can use the default Magento CLI commands to clean or flush the cache.
+
+> **Note:** The UCache must be enabled in order for the CLI commands to work properly.
+
+> Using the cache in your project will always work, even if it is marked as disabled.
+
+```bash
+# Clean cache
+$ php bin/magento cache:clean
+$ php bin/magento cache:clean ucache
+
+# Flush cache
+$ php bin/magento cache:flush
+$ php bin/magento cache:flush ucache
+
+# Enable cache
+$ php bin/magento cache:enable ucache
+```
+
 ## Installation
 This Magento2 module can be installed using composer:  
 `> composer require masterzydra/magento2-ucache`

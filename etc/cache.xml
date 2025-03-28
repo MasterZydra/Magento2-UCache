@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Cache/etc/cache.xsd">
+    <type name="ucache" translate="label,description" instance="MasterZydra\UCache\Model\Cache\Type\Frontend">
+        <label>Universal cache</label>
+        <description>An universal caches stored in the database</description>
+    </type>
+</config>
