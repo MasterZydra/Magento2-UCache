@@ -5,6 +5,7 @@ But what if you want to cache a string? Which cache can you use? This package co
 
 **Content**  
 - [Usage](#usage)
+- [Clean/Flush cache](#cleanflush-cache)
 - [Installation](#installation)
 - [Updating to latest version](#updating-to-latest-version)
 
@@ -49,6 +50,21 @@ class Demo {
 ```
 
 ## Clean/Flush cache
+### Module specific CLI commands
+You can use the flush command provided by this package to flush the cache.
+
+```bash
+# Flush cache
+$ php bin/magento ucache:flush
+
+# Remove a specific cache key 
+$ php bin/magento ucache:flush myCacheKey
+
+# Remove all cache keys matching a given regex
+$ php bin/magento ucache:flush -r ^myPrefix
+```
+
+### Magento default CLI commands
 You can use the default Magento CLI commands to clean or flush the cache.
 
 > **Note:** The UCache must be enabled in order for the CLI commands to work properly.
